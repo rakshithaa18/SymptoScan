@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>SymptoScan Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    .dots::after {
+  content: "";
+  animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+  0% { content: ""; }
+  33% { content: "."; }
+  66% { content: ".."; }
+  100% { content: "..."; }
+}
+/* ================= CHAT BOX ================= */
+.chat-box {
+  margin-top: 30px;
+  border-radius: 16px;
+  background: #ffffff;
+
+  border: 1.5px solid #0f766e;   /* 🔥 dark teal border */
+  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+
+  display: flex;
+  flex-direction: column;
+  height: 360px;   /* ✅ fixed size */
+  overflow: hidden;
+}
+
+/* ================= HEADER ================= */
+.chat-box h3 {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 14px;
+
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: white;
+
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+/* ================= MESSAGES ================= */
+#chatMessages,
+#chatMessagesAI,
+#chatMessagesDash {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  overflow-y: auto;   /* ✅ scroll always */
+}
+
+/* ================= CHAT BUBBLES ================= */
+.chat {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  animation: fadeIn 0.25s ease;
+}
+
+/* USER */
+.chat.user {
+  align-self: flex-end;
+  background: #0f766e;
+  color: white;
+  border-radius: 12px 12px 4px 12px;
+}
+
+.chat.user:hover {
+  background: #115e59;
+}
+
+/* AI */
+.chat.ai {
+  align-self: flex-start;
+  background: #ecfdf5;
+  color: #064e3b;
+  border: 1px solid #99f6e4;
+  border-radius: 12px 12px 12px 4px;
+}
+
+/* ================= INPUT AREA ================= */
+.chat-input-area {
+  display: flex;
+  padding: 8px;
+  border-top: 1px solid #e6fffa;
+  background: #f9fffe;
+}
+
+/* INPUT */
+.chat-input-area input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #99f6e4;
+  outline: none;
+  font-size: 13px;
+}
+
+/* INPUT FOCUS */
+.chat-input-area input:focus {
+  border-color: #0f766e;
+  box-shadow: 0 0 6px rgba(15,118,110,0.3);
+}
+
+/* BUTTON */
+.chat-input-area button {
+  margin-left: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  background: #0f766e;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chat-input-area button:hover {
+  background: #115e59;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= TYPING DOTS ================= */
+.dots::after {
+  content: "";
+  animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+  0% { content: ""; }
+  33% { content: "."; }
+  66% { content: ".."; }
+  100% { content: "..."; }
+}
+
+/* ================= HOVER EFFECT ================= */
+.chat-box:hover {
+  box-shadow: 0 12px 28px rgba(15,118,110,0.12);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(5px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .menu-btn {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .profile {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2ec4b6, #0096c7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+  position: fixed;
+  left: -260px;
+  top: 0;
+  width: 260px;
+  height: 100%;
+  background: white;
+  padding: 25px;
+  transition: all 0.4s ease;
+  box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+/* ACTIVE STATE */
+.sidebar.active {
+  left: 0;
+}
+
+    .sidebar h3 {
+      margin-bottom: 20px;
+      color: #0096c7;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar li {
+  padding: 12px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.sidebar li:hover {
+  background: linear-gradient(135deg, #e6f7ff, #d9faff);
+  transform: translateX(5px);
+}
+.sidebar button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #1f7a7a, #2bb3b3);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.sidebar button:hover {
+  transform: translateY(-2px);
+}
+
+
+    /* MAIN */
+    .main {
+      padding: 30px 40px;
+    }
+
+    /* HERO */
+    .hero {
+  background: linear-gradient(135deg, #1f7a7a, #2bb3b3);
+  padding: 80px 20px;
+  border-radius: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 10px 30px rgba(43,179,179,0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* FLOATING SHAPES */
+.hero::before {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  top: -60px;
+  right: -60px;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  bottom: -50px;
+  left: -50px;
+}
+    /* SECTION */
+    .section {
+      margin-top: 60px;
+      text-align: center;
+    }
+
+    .section p {
+      max-width: 650px;
+      margin: auto;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* ICON */
+    .section-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #2ec4b6, #0096c7);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      color: white;
+      font-size: 28px;
+    }
+
+    /* FEATURES */
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+   .card {
+  background: white;
+  padding: 25px;
+  width: 260px;
+  border-radius: 15px;
+  text-align: left;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+    .icon-box {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #2ec4b6, #0096c7);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    /* PROFILE */
+    .profile-box {
+  position: fixed;
+  right: -370px;
+  top: 0;
+  width: 370px;
+  height: 100%;
+  background: white;
+  box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+  transition: all 0.4s ease;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-box.active {
+  right: 0;
+}
+
+/* ANIMATION */
+@keyframes slideFade {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+    /* DISEASE */
+    .info-card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px auto;
+      max-width: 900px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      text-align: left;
+    }
+    #overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  display: none;
+  z-index: 900;
+}
+
+    /* MODAL STYLES */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-card {
+      background: white;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #0096c7, #2ec4b6);
+      padding: 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-modal {
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 30px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .metric-item {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      transition: 0.3s;
+    }
+
+    .metric-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .metric-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #0096c7;
+      display: block;
+    }
+
+    .metric-label {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 5px;
+    }
+
+    .matrix-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .matrix-container h3 {
+      color: #334155;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .matrix-img {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #eee;
+    }
+   
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+  </style>
+</head>
+
+<body>
+<!-- ONLY SHOWING CHANGED PARTS CLEANLY -->
+
+<!-- ✅ OVERLAY FIX -->
+<div id="overlay" onclick="closeSidebar(); closeProfile()"></div>  <div class="topbar">
+
+    <div class="left">
+      <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+      <h3 id="helloText"></h3>
+    </div>
+
+    <div style="position:relative;">
+      <div class="profile" onclick="toggleProfile()">👤</div>
+
+      <div class="profile-box" id="profileBox">
+        <div onclick="closeProfile()" style="
+  position:absolute;
+  right:12px;
+  top:10px;
+  cursor:pointer;
+  font-size:18px;
+  color:white;
+">
+  ✕
+</div>
+
+        <div id="profileBoxResult" style="margin-top:20px;"></div>
+        <div style="
+  background: linear-gradient(135deg, #1f7a7a, #2bb3b3);
+  padding: 20px;
+  text-align: center;
+  color: white;
+">
+  <div style="
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    background: white;
+    color: #2bb3b3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 24px;
+    font-weight: bold;
+  ">
+    👤
+  </div>
+
+  <h3 id="pname"></h3>
+  <div style="padding:15px 20px; font-size:14px; color:#ffffff;">
+  <p style="margin-bottom:10px;">📧 <span id="pemail"></span></p>
+  <p>📱 <span id="pphone"></span></p>
+</div>
+</div>
+
+  <div style="text-align:center;">
+    <h3 id="totalChecks">0</h3>
+    <p style="font-size:12px;color: #555;;">Checks</p>
+  </div>
+<div style="
+  width:60%;
+  height:1px;
+  background:linear-gradient(to right, transparent, #ccc, transparent);
+  margin:15px auto;
+"></div>
+  <div style="text-align:center;">
+    <h3 id="lastResult">--</h3>
+    <p style="font-size:12px;color:#555;">Last Result</p>
+  </div>
+<!-- ✅ ADD BELOW -->
+
+<div id="riskText" style="
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:#fff3e0;
+  color:#e65100;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:13px;
+  margin-top:8px;
+  justify-content:center;
+">
+</div>
+
+<!-- ✅ PROGRESS BAR -->
+<div style="
+  width:80%;
+  height:8px;
+  background:#eee;
+  border-radius:10px;
+  margin:10px auto;
+  overflow:hidden;
+">
+  <div id="riskBar" style="
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#ff6b6b,#ff0000);
+  "></div>
+</div>
+
+<!-- ✅ LAST TIME -->
+<p id="lastTime" style="
+  text-align:center;
+  font-size:12px;
+  color:#777;
+"></p>
+
+
+
+    
+        <div style="padding: 10px 15px 20px;">
+
+  <button onclick="openHistory()" style="
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #f1f5f9;
+    color: #1f2937;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  "
+  onmouseover="this.style.background='#e2e8f0'"
+  onmouseout="this.style.background='#f1f5f9'">
+    📜 View History
+  </button>
+
+  <button onclick="logout()" style="
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+    cursor: pointer;
+    transition: 0.3s;
+  "
+  onmouseover="this.style.background='#fecaca'"
+  onmouseout="this.style.background='#fee2e2'">
+    🚪 Logout
+  </button>
+  <button onclick="loadPage('Unknown')" style="
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  background:linear-gradient(135deg,#2ec4b6,#0096c7);
+  color:white;
+  margin-top:10px;
+  cursor:pointer;
+">
+  ⚡ Quick Check
+</button>
+
+
+</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <div onclick="closeSidebar()" style="cursor:pointer; display:inline-block;">✖</div>
+    <h3>SymptoScan</h3>
+    <ul style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+      <li onclick="closeSidebar(); loadPage('Cancer')">Cancer</li>
+      <li onclick="closeSidebar(); loadPage('Heart Disease')">Heart Disease</li>
+      <li onclick="closeSidebar(); loadPage('Stroke')">Stroke</li>
+      <li onclick="closeSidebar(); loadPage('Tuberculosis')">Tuberculosis</li>
+      <li onclick="closeSidebar(); loadPage('Alzheimer')">Alzheimer</li>
+      <li onclick="closeSidebar(); loadPage('Unknown')">Not Sure</li>
+      <li onclick="closeSidebar(); loadPage('AI')">🤖 AI Assistant</li>
+    </ul>
+
+    <button onclick="viewModelPerformance()" style="width: 100%; padding: 12px; background: #e6f7ff; color: #0096c7; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s;">
+      📊 View Model Performance
+    </button>
+  </div>
+
+  <div class="main">
+    <div id="contentArea">
+
+      <!-- FIXED HERO -->
+      <div class="hero">
+        <h1>Welcome to SymptoScan</h1>
+        <p>Your intelligent healthcare assistant</p>
+      </div>
+
+      <div class="section">
+        <h2>🧠 What is SymptoScan?</h2>
+        <p>
+          SymptoScan is an AI-powered healthcare assistant designed to analyze your symptoms and provide early insights
+          into potential health conditions.
+        </p>
+      </div>
+
+      <div class="section">
+        <div class="section-icon">💙</div>
+        <h2>❤️ Our Mission</h2>
+        <p>
+          Our mission is to make healthcare smarter, faster, and more accessible for everyone.
+          We aim to empower individuals with early detection tools that help identify health issues before they become
+          serious.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>⚡ Features</h2>
+        <div class="features">
+          <div class="card">
+            <div class="icon-box">🧠</div>
+            <p>
+              Advanced AI analyzes your symptoms and predicts possible health conditions with high accuracy, helping you
+              understand your health better.
+            </p>
+          </div>
+          <div class="card">
+            <div class="icon-box">⚡</div>
+            <p>
+              Get quick and reliable insights within seconds, enabling faster decision-making and reducing the need for
+              immediate consultations.
+            </p>
+          </div>
+          <div class="card">
+            <div class="icon-box">🛡️</div>
+            <p>
+              Receive tailored health suggestions and guidance based on your symptoms, lifestyle, and personal health
+              profile.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+  </div>
+
+  <!-- Performance Modal -->
+  <div id="performanceModal" class="modal-overlay" onclick="if(event.target === this) closePerformanceModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 style="margin:0; font-size:20px;">📊 Model Performance</h2>
+        <span class="close-modal" onclick="closePerformanceModal()">×</span>
+      </div>
+      <div class="modal-body">
+        <div class="metrics-grid" id="metricsContent">
+          <!-- JS will inject metrics here -->
+        </div>
+        <div class="matrix-container">
+          <h3>Confusion Matrix</h3>
+          <img src="/static/confusion_matrix.png" alt="Confusion Matrix" class="matrix-img">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================= UI CONTROLS =================
+    function toggleSidebar() {
+  document.getElementById("sidebar").classList.add("active");
+  document.getElementById("overlay").style.display = "block";
+}
+
+function closeSidebar() {
+  document.getElementById("sidebar").classList.remove("active");
+  document.getElementById("overlay").style.display = "none";
+}
+    function toggleProfile() {
+  let p = document.getElementById("profileBox");
+  let overlay = document.getElementById("overlay");
+
+  p.classList.toggle("active");
+  overlay.style.display = p.classList.contains("active") ? "block" : "none";
+}
+
+function closeProfile() {
+  document.getElementById("profileBox").classList.remove("active");
+  document.getElementById("overlay").style.display = "none";
+}
+    
+    // ================= LOAD USER =================
+    async function loadUser() {
+      let email = localStorage.getItem("email");
+      if (!email) return;
+
+      let res = await fetch(`/get-user/${email}`);
+      let user = await res.json();
+
+      document.getElementById("pname").innerText = user.username;
+      document.getElementById("pemail").innerText = user.email;
+      document.getElementById("pphone").innerText = user.phone;
+
+      document.getElementById("helloText").innerText = "Hello, " + user.username;
+      fetch(`/history/${email}`)
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("totalChecks").innerText = data.length;
+fetch(`/history/${email}`)
+  .then(res => res.json())
+  .then(data => {
+
+    document.getElementById("totalChecks").innerText = data.length;
+
+    if (data.length > 0) {
+
+      let last = data[data.length - 1];
+
+      // ✅ LAST RESULT WITH %
+      document.getElementById("lastResult").innerText =
+        last.prediction + " (" + last.probability.toFixed(2) + "%)";
+
+      // ✅ RISK TEXT
+      let prob = last.probability;
+      let text = "";
+
+      if (prob > 70) text = "🔴 High Risk";
+      else if (prob > 40) text = "🟠 Moderate Risk";
+      else text = "🟢 Low Risk";
+
+      document.getElementById("riskText").innerText = text;
+
+      // ✅ PROGRESS BAR
+      document.getElementById("riskBar").style.width = prob + "%";
+
+      // ✅ LAST TIME
+      document.getElementById("lastTime").innerText =
+        "Last checked: " + last.time;
+    }
+
+  });
+    if (data.length > 0) {
+let last = data[data.length - 1];
+
+document.getElementById("lastResult").innerText =
+  last.prediction + " (" + last.probability.toFixed(2) + "%)";    }
+  });
+  let prob = last.probability;
+let text = "";
+
+if (prob > 70) text = "🔴 High Risk";
+else if (prob > 40) text = "🟠 Moderate Risk";
+else text = "🟢 Low Risk";
+
+document.getElementById("riskText").innerText = text;
+    }
+
+    let ALL_SYMPTOMS = [];
+
+    window.onload = async function () {
+      await loadUser();
+
+      // ✅ 1. Read all symptom column names dynamically from API 
+      let res = await fetch("/api/symptoms");
+      if (res.ok) {
+        ALL_SYMPTOMS = await res.json();
+      } else {
+        console.error("Failed to load symptoms");
+      }
+    };
+    function clearChat() {
+  let chatMessages = document.querySelector(
+    "#chatMessagesAI, #chatMessagesDash, #chatMessages"
+  );
+
+  if (chatMessages) {
+    chatMessages.innerHTML = "";
+  }
+}
+
+    let CURRENT_PAGE = "";
+
+    // ================= PAGE LOADER =================
+    function loadPage(name) {
+
+      closeSidebar();
+      CURRENT_PAGE = name;
+      if (name === "AI") {
+  document.getElementById("contentArea").innerHTML = `
+<button class="back-btn" onclick="goBack()" style="
+  margin-bottom:10px;
+  background:#0f766e;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+">
+  ⬅ Back
+</button>
+    <div class="hero">
+      <h1>🤖 AI Health Assistant</h1>
+      <p>Ask anything about your health or symptoms.</p>
+    </div>
+
+    <div class="chat-box">
+      <h3>💬 AI Assistant</h3>
+      <div id="chatMessages"></div>
+
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Ask anything..." />
+        <button onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+    <button onclick="clearChat()">🗑</button>
+  `;
+  
+  setTimeout(() => {
+  let chatBox = document.querySelector("#chatMessagesAI, #chatMessagesDash, #chatMessages");
+  if (chatBox) {
+    chatBox.innerHTML += `
+      <div class="chat ai">
+        👋 Hi! I’m your AI health assistant. Ask me anything!
+      </div>
+    `;
+  }
+}, 200);
+
+  // 🔥 ENTER KEY SUPPORT
+  setTimeout(() => {
+let input = document.querySelector("#chatInputAI, #chatInputDash, #chatInput");
+    if (input) {
+      input.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") sendMessage();
+      });
+    }
+  }, 100);
+
+  return;
+}
+      let ALL_SYMPTOMS = [
+"weight_loss","fatigue","lump","pain","bleeding","swelling",
+"chest_pain","shortness_of_breath","sweating","nausea","arm_pain","weakness",
+"confusion","dizziness","headache","memory_loss","mood_changes",
+"persistent_cough","fever","loss_of_appetite","night_sweats","chills",
+"muscle_aches","joint_pain","vision_changes","difficulty_speaking",
+"numbness","paralysis","palpitations","vomiting","chronic_cough",
+"blood_in_sputum","chest_tightness","frequent_urination","thirst",
+"blurred_vision","difficulty_swallowing","hoarseness",
+"unexplained_bruising","itchy_skin"
+];
+      let data = {
+        "Cancer": { desc: "Cancer is a group of diseases involving abnormal cell growth.", risks: "Family history, smoking, obesity, radiation exposure", symptoms: [] },
+        "Heart Disease": { desc: "Heart disease refers to various conditions affecting the heart.", risks: "High BP, cholesterol, smoking", symptoms: [] },
+        "Stroke": { desc: "Stroke occurs when blood supply to the brain is interrupted.", risks: "High BP, diabetes", symptoms: [] },
+        "Tuberculosis": { desc: "Tuberculosis is a bacterial infection affecting lungs.", risks: "Weak immunity", symptoms: [] },
+        "Alzheimer": { desc: "Alzheimer affects memory and thinking.", risks: "Age, genetics", symptoms: [] },
+        "Unknown": { desc: "Select any symptoms to get prediction.", risks: "General", symptoms: [] }
+      };
+
+      // ✅ Disease-symptom mapping implementation
+      let diseaseMapping = {
+        "Cancer": ["weight_loss", "fatigue", "lump", "pain", "bleeding", "swelling", "loss_of_appetite", "night_sweats"],
+        "Heart Disease": ["chest_pain", "shortness_of_breath", "sweating", "nausea", "arm_pain", "weakness", "dizziness", "back_pain"],
+        "Stroke": ["weakness", "confusion", "trouble_speaking", "dizziness", "headache", "blurred_vision", "loss_of_balance", "face_drooping", "sudden_numbness", "sudden_weakness", "severe_headache"],
+        "Alzheimer": ["memory_loss", "difficulty_thinking", "mood_changes", "confusion", "disorientation", "difficulty_planning", "forgetting_recent_events", "misplacing_items", "difficulty_solving_problems", "trouble_understanding_visual_images", "difficulty_following_conversation", "personality_changes", "poor_judgment"],
+        "Tuberculosis": ["persistent_cough", "chest_pain", "fatigue", "weight_loss", "fever", "night_sweats", "shortness_of_breath", "coughing_blood", "loss_of_appetite", "chills", "low_grade_fever", "chest_discomfort", "swollen_lymph_nodes", "prolonged_fatigue"],
+        "Unknown": [] // Unknown uses all symptoms
+      };
+
+      let validSymptoms = name === "Unknown"
+  ? ALL_SYMPTOMS
+  : (diseaseMapping[name] || []);
+
+      data[name].symptoms = validSymptoms.map(sym => {
+        let label = sym.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+        return { label: label, value: sym };
+      });
+
+      let d = data[name];
+
+      // ✅ 3. Each symptom appears natively as a checkbox
+      let list = `
+<div class="symptom-container">
+  ${d.symptoms.map(s => `
+    <label class="symptom-card">
+      <input type="checkbox" value="${s.value}" class="symptom">
+      <span>${s.label}</span>
+    </label>
+  `).join("")}
+</div>
+`;
+
+      // Inline CSS injected specifically to avoid dirtying external assets
+      let styles = `
+      <style>
+        .btn-predict {
+          background: linear-gradient(135deg, #2ec4b6, #0096c7);
+          color: white;
+          border: none;
+          padding: 12px 25px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 10px rgba(0,150,199,0.3);
+          margin-right: 10px;
+        }
+        .btn-predict:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,150,199,0.4); }
+        .symptom-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.symptom-card {
+  background: #f5f7fa;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.symptom-card input {
+  display: none;
+}
+
+.symptom-card span {
+  font-size: 15px;
+  color: #333;
+}
+
+.symptom-card:hover {
+  background: #e8f7f6;
+}
+
+.symptom-card input:checked + span {
+  color: #0096c7;
+  font-weight: 600;
+}
+
+.symptom-card input:checked + span::before {
+  content: "✔ ";
+  color: #0096c7;
+}
+        .btn-cancel {
+          background: #e2e8f0;
+          color: #4a5568;
+          border: none;
+          padding: 12px 25px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        .btn-cancel:hover { background: #cbd5e0; color: #2d3748; }
+.chat-box {
+  margin-top: 30px;
+  padding: 15px;
+  border-radius: 12px;
+  background: #f5f7fa;
+}
+
+#chatMessages {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+#chatInput {
+  width: 70%;
+  padding: 8px;
+  margin-right: 5px;
+}
+
+.chat-box button {
+  padding: 8px 12px;
+  background: #0096c7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+        .result-card {
+          background: white; border-radius: 12px; padding: 25px;
+          box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-top: 30px; text-align: center; border-top: 5px solid #2ec4b6;
+        }
+        .risk-badge { display: inline-block; padding: 6px 15px; border-radius: 20px; font-weight: bold; margin-top:10px; color: white; }
+        .risk-low { background: #48bb78; } .risk-mod { background: #ecc94b; color: #744210;} .risk-high { background: #f56565; }
+      </style>`;
+
+        document.getElementById("contentArea").innerHTML = styles + `
+  <div class="hero">
+    <h1>${name === "Unknown" ? "Symptom Checker" : name}</h1>
+    <p>${d.desc}</p>
+  </div>
+
+  <div class="info-card">
+    <h3>⚠️ Select Your Symptoms</h3>
+    ${list}
+  </div>
+
+  <div class="info-card">
+    <h3>⚡ Risk Factors</h3>
+    <p>${d.risks}</p>
+  </div>
+  <div style="text-align:center;margin-top:25px;">
+    <button onclick="predictFromSymptoms()" class="btn-predict">🔍 Predict Disease</button>
+    <button onclick="goHome()" class="btn-cancel">Cancel</button>
+  </div>
+
+  <div id="predictionResult"></div>
+  <button onclick="sendMessageAuto('Explain my result')">
+  🧠 Explain Result
+</button>
+  
+  <!-- ✅ ADD CHAT UI HERE -->
+  <div class="chat-box">
+  <h3>💬 AI Assistant</h3>
+
+  <div id="chatMessages"></div>
+
+  <div class="chat-input-area">
+    <input type="text" id="chatInput" placeholder="Ask about your symptoms..." />
+    <button onclick="sendMessage()">➤</button>
+  </div>
+</div>
+ <div><button onclick="clearChat()">🗑</button></div>
+
+
+      `;
+      
+      document.getElementById("chatMessages").innerHTML = "";
+      setTimeout(() => {
+let input = document.querySelector("#chatInputAI, #chatInputDash, #chatInput");
+  if (input) {
+    input.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  }
+}, 100);
+    }
+
+    // ================= PREDICT FUNCTION =================
+    async function predictFromSymptoms() {
+      let ALL_SYMPTOMS = [
+"weight_loss","fatigue","lump","pain","bleeding","swelling",
+"chest_pain","shortness_of_breath","sweating","nausea","arm_pain","weakness",
+"confusion","dizziness","headache","memory_loss","mood_changes",
+"persistent_cough","fever","loss_of_appetite","night_sweats","chills",
+"muscle_aches","joint_pain","vision_changes","difficulty_speaking",
+"numbness","paralysis","palpitations","vomiting","chronic_cough",
+"blood_in_sputum","chest_tightness","frequent_urination","thirst",
+"blurred_vision","difficulty_swallowing","hoarseness",
+"unexplained_bruising","itchy_skin"
+];
+      let selected = document.querySelectorAll("#contentArea .symptom:checked");
+
+      if (selected.length === 0) {
+        alert("Select at least one symptom!");
+        return;
+      }
+
+      let allSymptoms = ALL_SYMPTOMS.length > 0 ? ALL_SYMPTOMS : [];
+      let selectedValues = Array.from(selected).map(s => s.value);
+      let input = allSymptoms.map(sym => selectedValues.includes(sym) ? 1 : 0);
+      let email = localStorage.getItem("email");
+
+      let res = await fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symptoms: input, email: email })
+      });
+
+      let response_data = await res.json();
+      let predictions = response_data.predictions;
+      let recommendation = response_data.recommendation;
+      let explanation = response_data.explanation;
+
+      // Ensure prediction names align with UI mapping
+      if (predictions["Heart Attack"]) {
+        predictions["Heart Disease"] = predictions["Heart Attack"];
+        delete predictions["Heart Attack"];
+      }
+
+      let sorted = Object.entries(predictions).sort((a, b) => b[1] - a[1]);
+      let html = "";
+
+      // ✅ 4. Result Page Design & ✅ 3. Prediction Result Logic
+      if (CURRENT_PAGE !== "Unknown") {
+         let targetProb = predictions[CURRENT_PAGE] || 0;
+         let riskClass = targetProb < 30 ? "risk-low" : (targetProb < 70 ? "risk-mod" : "risk-high");
+         let riskText = targetProb < 30 ? "Low Risk" : (targetProb < 70 ? "Moderate Risk" : "High Risk");
+
+         html = `
+          <div class="result-card">
+            <h2 style="color: #2c7a7b; margin-top:0;">🧠 AI Prediction Result</h2>
+            <h3 style="font-size: 22px; margin-bottom: 5px;">Disease: ${CURRENT_PAGE}</h3>
+            <p style="font-size: 18px; margin: 10px 0;"><b>Probability:</b> ${targetProb.toFixed(1)}%</p>
+            <div class="risk-badge ${riskClass}">${riskText}</div>
+            
+            <div style="background: #f7fafc; padding: 15px; border-radius: 8px; margin-top: 20px; font-size:15px; color:#4a5568; line-height:1.5;">
+              <b>Message:</b> Based on the symptoms you selected, there is a ${riskText.toLowerCase()} probability of ${CURRENT_PAGE}. ${recommendation ? '<br><br><b>AI Health Recommendation:</b><br>' + recommendation : 'It is recommended to consult a specialist for further diagnosis.'}
+            </div>
+
+            <div style="margin-top: 20px; text-align: left;">
+              <h4 style="color: #2c7a7b; margin-bottom: 10px;">🔍 Why This Prediction?</h4>
+              <p style="font-size: 14px; color: #718096; margin-bottom: 8px;">Top Contributing Symptoms:</p>
+              <ul style="list-style: none; padding: 0;">
+                ${explanation && explanation.length > 0 ? explanation.map(sym => `
+                  <li style="font-size: 15px; color: #2d3748; margin-bottom: 5px;">
+                    <span style="color: #48bb78; margin-right: 8px;">✔</span> ${sym.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+                  </li>
+                `).join("") : '<li style="font-size: 14px; color: #a0aec0;">No specific symptoms identified.</li>'}
+              </ul>
+              <p style="font-size: 13px; color: #a0aec0; font-style: italic; margin-top: 10px;">
+                "These symptoms strongly influenced the model's prediction."
+              </p>
+            </div>
+          </div>
+         `;
+      } else {
+         // "Not Sure" or "Unknown" case
+         html = `
+          <div class="result-card" style="border-top-color: #ed8936;">
+            <h2 style="color: #c05621; margin-top:0;">🧠 AI Prediction Result</h2>
+            <p style="color: #718096; margin-bottom: 20px;">Top Possible Diseases Based on Symptoms</p>
+         `;
+         sorted.slice(0, 3).forEach(([disease, prob], index) => {
+            html += `<p style="font-size:18px; margin:10px 0; text-align:left; padding-left:20%;"><b>${index + 1}. ${disease}</b> — ${prob.toFixed(1)}%</p>`;
+         });
+         html += `
+            <div style="background: #f7fafc; padding: 15px; border-radius: 8px; margin-top: 20px; font-size:15px; color:#4a5568; line-height:1.5; text-align:left;">
+              <b>AI Health Recommendation:</b><br>${recommendation ? recommendation : 'It is recommended to consult a specialist for further diagnosis based on the top predicted condition.'}
+            </div>
+            
+            <div style="margin-top: 20px; text-align: left;">
+              <h4 style="color: #c05621; margin-bottom: 10px;">🔍 Why This Prediction?</h4>
+              <p style="font-size: 14px; color: #718096; margin-bottom: 8px;">Top Contributing Symptoms for ${sorted[0][0]}:</p>
+              <ul style="list-style: none; padding: 0;">
+                ${explanation && explanation.length > 0 ? explanation.map(sym => `
+                  <li style="font-size: 15px; color: #2d3748; margin-bottom: 5px;">
+                    <span style="color: #ed8936; margin-right: 8px;">✔</span> ${sym.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+                  </li>
+                `).join("") : '<li style="font-size: 14px; color: #a0aec0;">No specific symptoms identified.</li>'}
+              </ul>
+              <p style="font-size: 13px; color: #a0aec0; font-style: italic; margin-top: 10px;">
+                "These symptoms strongly influenced the model's prediction."
+              </p>
+            </div>
+         </div>`;
+      }
+
+      document.getElementById("predictionResult").innerHTML = html;
+      setTimeout(() => {
+  sendMessageAuto("Explain my result");
+}, 500);
+      document.getElementById("predictionResult").scrollIntoView({ behavior: 'smooth' });
+      
+    }
+    function goBack() {
+  window.location.href = "/dashboard"; 
+}
+    function sendMessageAuto(text) {
+  let input = document.getElementById("chatInput");
+  if (input) {
+    input.value = text;
+    sendMessage();
+  }
+}
+    async function sendMessage() {
+  let input = document.querySelector("#chatInputAI, #chatInputDash, #chatInput");
+  let msg = input.value.trim();
+
+  if (!msg) return;
+
+let chatBox = document.querySelector("#chatMessagesAI, #chatMessagesDash, #chatMessages");
+  // ✅ GET SELECTED SYMPTOMS
+  let selectedValues = Array.from(document.querySelectorAll(".symptom:checked"))
+    .map(s => s.value);
+let symptomText = selectedValues.length 
+  ? "🩺 Symptoms: " + selectedValues.join(", ").replaceAll("_", " ")
+  : "";
+  // ❗ NO SYMPTOMS
+  if (symptomText) {
+  chatBox.innerHTML += `
+    <div class="chat ai">
+      ${symptomText}
+    </div>
+  `;
+}
+ // 🔥 ONLY block in symptom page
+const diseasePages = ["Cancer", "Heart Disease", "Stroke", "Tuberculosis", "Alzheimer"];
+
+if (diseasePages.includes(CURRENT_PAGE)) {
+  if (selectedValues.length === 0) {
+    chatBox.innerHTML += `
+      <div class="chat ai">
+        ⚠️ Please select at least one symptom first.
+      </div>
+    `;
+    return;
+  }
+}
+
+  // ✅ USER MESSAGE
+  chatBox.innerHTML += `
+    <div class="chat user">${msg}</div>
+  `;
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  input.value = "";
+
+  // ⏳ Typing animation dots
+  chatBox.innerHTML += `
+    <div class="chat ai" id="typing">
+      <span>Typing<span class="dots">...</span></span>
+    </div>
+  `;
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try {
+    let res = await fetch("/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        message: msg,
+        symptoms: selectedValues,
+        disease: CURRENT_PAGE
+      })
+    });
+
+    let data = await res.json();
+
+    document.getElementById("typing")?.remove();
+
+    chatBox.innerHTML += `
+      <div class="chat ai">${data.reply}</div>
+    `;
+
+  } catch (error) {
+    document.getElementById("typing")?.remove();
+
+    chatBox.innerHTML += `
+      <div class="chat ai">
+        ⚠️ Unable to connect. Please try again.
+      </div>
+    `;
+  }
+  
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+  
+}
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("chatInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  });
+});
+
+    // ================= HISTORY =================
+    // ✅ FINAL FIX
+function openHistory() {
+  window.location.href = "/history";
+}
+
+    // ================= LOGOUT =================
+    function logout() {
+      localStorage.removeItem("email");
+      window.location.href = "/";
+    }
+    
+
+    // ================= HOME =================
+    function goHome() {
+      location.reload();
+    }
+
+    // ================= MODEL PERFORMANCE =================
+    async function viewModelPerformance() {
+      closeSidebar();
+      let modal = document.getElementById("performanceModal");
+      modal.style.display = "flex";
+
+      let content = document.getElementById("metricsContent");
+      content.innerHTML = `<p style='grid-column: span 2; text-align:center;'>Loading metrics...</p>`;
+
+      try {
+        let res = await fetch("/model_performance");
+        let data = await res.json();
+
+        content.innerHTML = `
+          <div class="metric-item">
+            <span class="metric-value">${(data.accuracy * 100).toFixed(1)}%</span>
+            <span class="metric-label">Accuracy</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-value">${(data.precision * 100).toFixed(1)}%</span>
+            <span class="metric-label">Precision</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-value">${(data.recall * 100).toFixed(1)}%</span>
+            <span class="metric-label">Recall</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-value">${(data.f1_score * 100).toFixed(2)}%</span>
+            <span class="metric-label">F1 Score</span>
+          </div>
+        `;
+      } catch (err) {
+        content.innerHTML = `<p style='grid-column: span 2; text-align:center; color:red;'>Failed to load metrics.</p>`;
+      }
+    }
+
+    function closePerformanceModal() {
+      document.getElementById("performanceModal").style.display = "none";
+    }
+  </script>
+
+</body>
+
+</html>

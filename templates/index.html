@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SymptoScan Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f7fb;
+}
+
+/* CONTAINER */
+.container {
+  width: 850px;
+  height: 500px;
+  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+/* LEFT PANEL */
+.left {
+  width: 50%;
+  background: linear-gradient(135deg, #1f7a7a, #2bb3b3);
+  color: white;
+  padding: 50px 30px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* FLOATING SHAPES */
+.left::before, .left::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.2;
+}
+
+.left::before {
+  width: 200px;
+  height: 200px;
+  background: white;
+  top: -50px;
+  right: -50px;
+}
+
+.left::after {
+  width: 150px;
+  height: 150px;
+  background: white;
+  bottom: -40px;
+  left: -40px;
+}
+
+/* LOGO */
+.logo {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.left h2 {
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.left p {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* RIGHT PANEL */
+.right {
+  width: 50%;
+  background: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.right h2 {
+  margin-bottom: 5px;
+  color: #1f2937;
+}
+
+.right p {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* INPUT */
+.input-box {
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  outline: none;
+  background: #f9fafb;
+}
+
+input:focus {
+  border-color: #2bb3b3;
+  box-shadow: 0 0 6px rgba(43,179,179,0.3);
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #1f7a7a, #2bb3b3);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+/* LINKS */
+.extra {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.extra a {
+  text-decoration: none;
+  color: #2bb3b3;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="logo">💙</div>
+    <h2>SYMPTOSCAN</h2>
+    <p>Your intelligent healthcare assistant</p>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <h2>Welcome Back</h2>
+    <p>Sign in to continue</p>
+
+    <div class="input-box">
+      <input id="lemail" type="text" placeholder="Email">
+    </div>
+
+    <div class="input-box">
+      <input id="lpass" type="password" placeholder="Password">
+    </div>
+
+    <div class="extra">
+      <a href="#">Forgot Password?</a>
+      <a href="/register">Create Account</a>
+    </div>
+
+    <button onclick="login()">SIGN IN</button>
+  </div>
+
+</div>
+
+<script src="../static/script.js"></script>
+
+</body>
+</html>
